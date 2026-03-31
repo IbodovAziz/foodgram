@@ -1,0 +1,46 @@
+version: "3.9"
+
+volumes:
+  pg_data:
+  backend_static:
+  frontend_static:
+  media:
+
+services:
+  db:
+    image: postgres:13.10
+    env_file: .env
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+
+  backend:
+    build: ./backend/
+    env_file: .env
+    depends_on:
+      - db
+    volumes:
+      - backend_static:/backend_static
+      - media:/media
+    command: >
+      sh -c "
+      python manage.py collectstatic --noinput &&
+      gunicorn foodgram.wsgi:application --bind 0.0.0.0:8000
+      "
+
+  frontend:
+    build: ./frontend/
+    command: cp -r /app/build/. /frontend_static/
+    volumes:
+      - frontend_static:/frontend_static
+
+  gateway:
+    build: ./nginx/
+    ports:
+      - 8000:80
+    depends_on:
+      - backend
+      - frontend
+    volumes:
+      - backend_static:/backend_static:ro
+      - frontend_static:/frontend_static:ro
+      - media:/media:ro

@@ -1,0 +1,32 @@
+[flake8]
+max-line-length = 79
+exclude = 
+    migrations,
+    __pycache__,
+    .git,
+    .venv,
+    env,
+    venv,
+    .vscode,
+    *.pyc
+ignore = 
+    E501,  # line too long
+    W503,  # line break before binary operator
+    E126,  # continuation line over-indented for hanging indent
+    E123,  # closing bracket does not match indentation of opening bracket's line
+    E127,  # continuation line over-indented for visual indent
+    E128,  # continuation line under-indented for visual indent
+    E203,  # whitespace before ':'
+    E266,  # too many leading '#' for block comment
+    E402,  # module level import not at top of file
+    F401,  # imported but unused
+    F403,  # 'from module import *' used; unable to detect undefined names
+    F405,  # name may be undefined, or defined from star import: module
+    C901   # too complex
+    D106,
+    D100
+    D101
+    D102
+    D103
+    D104
+    D105
