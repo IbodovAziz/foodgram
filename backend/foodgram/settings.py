@@ -153,4 +153,3 @@ MEDIA_ROOT = '/media'
 
 STATIC_URL = '/backend_static/'
 STATIC_ROOT = '/backend_static'
-
