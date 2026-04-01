@@ -1,4 +1,37 @@
-Находясь в папке infra, выполните команду docker-compose up. При выполнении этой команды контейнер frontend, описанный в docker-compose.yml, подготовит файлы, необходимые для работы фронтенд-приложения, а затем прекратит свою работу.
+# Foodgram
 
-По адресу http://localhost изучите фронтенд веб-приложения, а по адресу http://localhost/api/docs/ — спецификацию API.
+Foodgram — это веб-приложение для публикации рецептов. Пользователи могут создавать рецепты, добавлять их в избранное, подписываться на авторов и формировать список покупок.
 
+## Технологии
+
+### Backend
+- Python
+- Django
+- Django REST Framework
+
+### Frontend
+- React
+- JavaScript
+
+### Инфраструктура
+- Docker
+- Docker Compose
+- Nginx
+
+## Структура проекта
+
+foodgram/
+├── .github/
+│   └── workflows/               # CI/CD сценарии
+├── backend/                     # backend-приложение Django
+├── docs/                        # документация проекта
+├── frontend/                    # frontend-приложение
+├── infra/                       # инфраструктурные файлы для запуска
+├── nginx/                       # конфигурация nginx
+├── postman_collection/          # коллекция запросов Postman
+├── .gitignore
+├── LICENSE
+├── README.md
+├── docker-compose.production.yml
+├── docker-compose.yml
+└── setup.cfg
