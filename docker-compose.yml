@@ -1,5 +1,3 @@
-version: "3.9"
-
 volumes:
   pg_data:
   backend_static:
@@ -14,7 +12,7 @@ services:
       - pg_data:/var/lib/postgresql/data
 
   backend:
-    build: ./backend/
+    image: ibodov/foodgram_backend
     env_file: .env
     depends_on:
       - db
@@ -28,15 +26,15 @@ services:
       "
 
   frontend:
-    build: ./frontend/
+    image: ibodov/foodgram_frontend
     command: cp -r /app/build/. /frontend_static/
     volumes:
       - frontend_static:/frontend_static
 
   gateway:
-    build: ./nginx/
+    image: ibodov/foodgram_gateway
     ports:
-      - 8000:80
+      - 8080:80
     depends_on:
       - backend
       - frontend
