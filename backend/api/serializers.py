@@ -30,37 +30,6 @@ class Base64ImageField(serializers.ImageField):
         return super().to_internal_value(data)
 
 
-class SetPasswordSerializer(serializers.Serializer):
-    """Сериализатор для изменения пароля пользователя."""
-
-    current_password = serializers.CharField(required=True, write_only=True)
-    new_password = serializers.CharField(
-        required=True,
-        write_only=True,
-        validators=[validate_password]
-    )
-
-    def validate_current_password(self, value):
-        """Валидация текущего пароля."""
-        request = self.context.get('request')
-        if not request or not request.user.is_authenticated:
-            raise serializers.ValidationError(
-                'Пользователь не аутентифицирован'
-            )
-        user = request.user
-        if not user.check_password(value):
-            raise serializers.ValidationError('Неверный пароль')
-        return value
-
-    def validate(self, data):
-        """Проверка, что новый пароль отличается от старого."""
-        if data['current_password'] == data['new_password']:
-            raise serializers.ValidationError(
-                'Новый пароль должен отличаться от старого'
-            )
-        return data
-
-
 class UserSerializer(serializers.ModelSerializer):
     """
     Основной сериализатор пользователя.

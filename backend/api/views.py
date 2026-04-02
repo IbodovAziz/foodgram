@@ -4,7 +4,7 @@ from django.contrib.auth import get_user_model
 from django.core.cache import cache
 from django.db.models import Sum
 from django.http import HttpResponse
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, redirect
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
@@ -15,6 +15,7 @@ from rest_framework.permissions import (
     IsAuthenticatedOrReadOnly,
 )
 from rest_framework.response import Response
+from rest_framework.views import APIView
 from djoser.views import UserViewSet as DjoserUserViewSet
 
 from foodgram.constants import TIMEOUT
@@ -286,3 +287,16 @@ class RecipeViewSet(viewsets.ModelViewSet):
         cache.set(f'short_link_{short_hash}', recipe.id, timeout=TIMEOUT)
         short_link = request.build_absolute_uri(f'/s/{short_hash}/')
         return Response({'short-link': short_link})
+
+
+class ShortLinkRedirectView(APIView):
+    permission_classes = (AllowAny,)
+
+    def get(self, request, short_hash):
+        recipe_id = cache.get(f'short_link_{short_hash}')
+        if recipe_id is None:
+            return Response(
+                {'detail': 'Короткая ссылка не найдена.'},
+                status=status.HTTP_404_NOT_FOUND
+            )
+        return redirect(f'/recipes/{recipe_id}/')
