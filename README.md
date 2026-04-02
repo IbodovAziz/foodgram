@@ -20,18 +20,19 @@ Foodgram — это веб-приложение для публикации ре
 
 ## Структура проекта
 
+```bash
 foodgram/
 ├── .github/
-│   └── workflows/               # CI/CD сценарии
-├── backend/                     # backend-приложение Django
-├── docs/                        # документация проекта
-├── frontend/                    # frontend-приложение
-├── infra/                       # инфраструктурные файлы для запуска
-├── nginx/                       # конфигурация nginx
-├── postman_collection/          # коллекция запросов Postman
+│   └── workflows/            # CI/CD сценарии
+├── backend/                  # Django backend
+├── docs/                     # документация проекта
+├── frontend/                 # React frontend
+├── infra/                    
+├── nginx/                    # конфигурация nginx
+├── postman_collection/       # коллекция Postman
 ├── .gitignore
 ├── LICENSE
 ├── README.md
-├── docker-compose.production.yml
 ├── docker-compose.yml
+├── docker-compose.production.yml
 └── setup.cfg
