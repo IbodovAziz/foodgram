@@ -15,6 +15,7 @@ from rest_framework.permissions import (
     IsAuthenticatedOrReadOnly,
 )
 from rest_framework.response import Response
+from djoser.views import UserViewSet as DjoserUserViewSet
 
 from foodgram.constants import TIMEOUT
 from recipes.models import Ingredient, Recipe, RecipeIngredient, Tag
@@ -30,7 +31,6 @@ from .serializers import (
     RecipeMinifiedSerializer,
     RecipeReadSerializer,
     RecipeWriteSerializer,
-    SetPasswordSerializer,
     SubscribeSerializer,
     TagSerializer,
     UserCreateSerializer,
@@ -48,7 +48,7 @@ class StandardResultsSetPagination(PageNumberPagination):
     max_page_size = 100
 
 
-class UserViewSet(viewsets.ModelViewSet):
+class UserViewSet(DjoserUserViewSet):
     """ViewSet для работы с пользователями."""
 
     queryset = User.objects.all()
@@ -68,42 +68,9 @@ class UserViewSet(viewsets.ModelViewSet):
             if self.request.method == 'DELETE':
                 return AvatarDeleteSerializer
             return AvatarSerializer
-        if self.action == 'set_password':
-            return SetPasswordSerializer
         if self.action == 'subscribe':
             return SubscribeSerializer
         return UserSerializer
-
-    @action(detail=False, methods=('post',), permission_classes=[
-        IsAuthenticated], url_path='set_password')
-    def set_password(self, request):
-        """Изменение пароля текущего пользователя."""
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        request.user.set_password(
-            serializer.validated_data['new_password']
-        )
-        request.user.save()
-        return Response(status=status.HTTP_204_NO_CONTENT)
-
-    @action(
-        detail=False,
-        permission_classes=(IsAuthenticated,),
-    )
-    def me(self, request):
-        """Просмотр/редактирование своего профиля."""
-        if request.method == 'GET':
-            serializer = self.get_serializer(request.user)
-            return Response(serializer.data)
-
-        serializer = self.get_serializer(
-            request.user,
-            data=request.data,
-            partial=True
-        )
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response(serializer.data)
 
     @action(
         methods=('put', 'delete'),
