@@ -143,7 +143,7 @@ class TagViewSet(viewsets.ReadOnlyModelViewSet):
 
 
 class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
-    """ViewSet для ингридиентов - только чтение для всех."""
+    """ViewSet для ингредиентов - только чтение для всех."""
 
     queryset = Ingredient.objects.all()
     serializer_class = IngredientSerializer
@@ -163,33 +163,10 @@ class RecipeViewSet(viewsets.ModelViewSet):
     filter_backends = [DjangoFilterBackend]
     filterset_class = RecipeFilter
 
-    def get_serializer_context(self):
-        """Добавляем request в контекст сериализатора."""
-        context = super().get_serializer_context()
-        context['request'] = self.request
-        return context
-
     def get_serializer_class(self):
         if self.action in ['create', 'update', 'partial_update']:
             return RecipeWriteSerializer
         return RecipeReadSerializer
-
-    def create(self, request, *args, **kwargs):
-        """Создание рецепта."""
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        recipe = serializer.save(author=request.user)
-        read_serializer = RecipeReadSerializer(
-            recipe,
-            context=self.get_serializer_context()
-        )
-        return Response(read_serializer.data, status=status.HTTP_201_CREATED)
-
-    def destroy(self, request, *args, **kwargs):
-        """Удаление рецепта. Разрешается автору или админу."""
-        instance = self.get_object()
-        self.perform_destroy(instance)
-        return Response(status=status.HTTP_204_NO_CONTENT)
 
     def _handle_recipe_relation(self, request, pk, relation_type):
         """Общая логика для работы с отношениями рецептов."""
